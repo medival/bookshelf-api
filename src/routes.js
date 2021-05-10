@@ -1,13 +1,19 @@
+const {} = require('./handler');
+
 const routes = [
 	{
 		method: 'POST',
 		path: '/books',
-		handler: (request, h) => {}
+		handler: (request, h) => {
+			
+		}
 	},
 	{
 		method: 'GET',
 		path: '/books',
-		handler: (request, h) => {}
+		handler: (request, h) => {
+			return 'Homepage'
+		}
 	},
 	{
 		method: 'GET',
