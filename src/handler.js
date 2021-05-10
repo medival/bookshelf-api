@@ -36,44 +36,37 @@ const addBookHandler = (request, h) => {
     updatedAt,
 	};
 	
+	
 	if (!name) {
-		const response = h.response({
+		return h.response({
 			status: 'fail',
 			message: 'Gagal menambahkan buku. Mohon isi nama buku'
-		});
-		response.code(400);
-		return response;
+		}).code(400)
 	}
 	
 	if (readPage > pageCount) {
-		const response = h.response({
+		return h.response({
 			status: 'fail',
 			message: 'Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount'
-		})
-		response.code(400);
-		return response;
+		}).code(400)
 	}
 
 	books.push(newBook);
 	const isSuccess = books.filter((book) => book.id === id).length > 0;
 	if (isSuccess) {
-		const response = h.response({
+		return h.response({
 			status: 'success',
 			message: 'Buku berhasil ditambahkan',
 			data: {
 				bookId: id
 			},
-		});
-		response.code(201);
-		return response;
+		}).code(201)
 	}
 	
-	const response = h.response({
-	status: 'error',
-	message: 'Buku gagal ditambahkan'
-	});
-	response.code(500);
-	return response;
+	return h.response({
+		status: 'error',
+		message: 'Buku gagal ditambahkan'
+	}).code(500);
 };
 
 const getAllBooksHandler = (request, h) => {
@@ -81,7 +74,79 @@ const getAllBooksHandler = (request, h) => {
 	const { name, reading, finished } = request.query;
 	
 	if (name) {
-		const response = h.response({
+		return h.response({
+			status: 'success',
+			data: {
+				books: books.map((book) => ({
+					id: book.id,
+					name: book.name,
+					publisher: book.publisher
+				}))
+			}
+		}).code(200);
+	}
+	
+	if (reading === '1') {
+		return h.response({
+			status: 'success',
+			data: {
+				books: books
+					.filter((book) => book.reading === true)
+					.map((book) => ({
+						id: book.id,
+						name: book.name,
+						publisher: book.publisher,
+					})),
+			},
+		}).code(200);
+	}
+	
+	if (reading === '0') {
+		return h.response({
+			status: 'success',
+			data: {
+				books: books
+					.filter((book) => book.reading === false)
+					.map((book) => ({
+						id: book.id,
+						name: book.name,
+						publisher: book.publisher,
+					})),
+			},
+		}).code(200);
+	}
+	
+	if (finished === '1') {
+		return h.response({
+			status: 'success',
+			data: {
+				books: books
+					.filter((book) => book.finished === true)
+					.map((book) => ({
+						id: book.id,
+						name: book.name,
+						publisher: book.publisher,
+					})),
+			},
+		}).code(200);
+	}
+	
+	if (finished === '0') {
+		return h.response({
+			status: 'success',
+			data: {
+				books: books
+					.filter((book) => book.finished === false)
+					.map((book) => ({
+						id: book.id,
+						name: book.name,
+						publisher: book.publisher,
+					})),
+			},
+		}).code(200);
+	}
+	
+	return h.response({
 		status: 'success',
 		data: {
 			books: books.map((book) => ({
@@ -90,57 +155,7 @@ const getAllBooksHandler = (request, h) => {
 				publisher: book.publisher
 			}))
 		}
-	});
-	response.code(200);
-	return response;
-	}
-	
-	if (reading === '1') {
-		const response = h.response({
-			status: 'success',
-			data: {
-				books: books
-					.filter((book) => book.reading === true)
-					.map((book) => ({
-						id: book.id,
-						name: book.name,
-						publisher: book.publisher,
-					})),
-			},
-		});
-		response.code(200);
-		return response;
-	}
-	
-	if (finished === '1') {
-		const response = h.response({
-			status: 'success',
-			data: {
-				books: books
-					.filter((book) => book.reading === true)
-					.map((book) => ({
-						id: book.id,
-						name: book.name,
-						publisher: book.publisher,
-					})),
-			},
-		})
-		response.code(200);
-		return response;
-	}
-	
-	const response = h.response({
-	status: 'success',
-		data: {
-			books: books.map((book) => ({
-				id: book.id,
-				name: book.name,
-				publisher: book.publisher
-			}))
-		}
-	});
-	response.code(200);
-	return response;
+	}).code(200);
 }
 
 const getBooksByIdHandler = (request, h) => {
@@ -148,22 +163,18 @@ const getBooksByIdHandler = (request, h) => {
 	const book = books.filter((book) => book.id === bookId)[0];
 	
 	if (book !== undefined) {
-		const response = h.response({
+		return h.response({
 			status: 'success',
 			data: {
 				book
 			},
-		});
-		response.code(200);
-		return response;
+		}).code(200);
 	}
 	
-	const response = h.response({
+	return h.response({
 		status: 'fail',
 		message: 'Buku tidak ditemukan'
-	});
-	response.code(404);
-	return response;
+	}).code(404);
 }
 
 const editBookByIdHandler = (request, h) => {
@@ -180,31 +191,25 @@ const editBookByIdHandler = (request, h) => {
 	} = request.payload;
 	
 	if (name === undefined) {
-		const response = h.response({
+		return h.response({
 			status: 'fail',
 			message: 'Gagal memperbarui buku. Mohon isi nama buku'
-		});
-		response.code(400);
-		return response;
+		}).code(400);
 	}
 	
 	if (readPage > pageCount) {
-		const response = h.response({
+		return h.response({
 			status: 'fail',
 			message: 'Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount'
-		});
-		response.code(400);
-		return response;
+		}).code(400);
 	}
 	
 	const index = books.findIndex((book) => book.id === bookId);
 	if (index === -1) {
-		const response = h.response({
+		return h.response({
 			status: 'fail',
 			message: 'Gagal memperbarui buku. Id tidak ditemukan'
-		});
-		response.code(404);
-		return response;
+		}).code(404);
 	}
 	
 	books[index] = {
@@ -220,13 +225,10 @@ const editBookByIdHandler = (request, h) => {
 		finished: pageCount === readPage,
 		updatedAt: new Date().toString(),
 	};
-	const response = h.response({
+	return h.response({
 		status: 'success',
 		message: 'Buku berhasil diperbarui'
-	});
-	response.code(200);
-	return response;
-	
+	}).code(200);
 };
 
 const deleteBookById = (request, h) => {
@@ -236,21 +238,17 @@ const deleteBookById = (request, h) => {
 	
 	if (index !== -1) {
 		books.splice(index, 1);
-		const response = h.response({
+		return h.response({
 			status: 'fail',
 			message: 'Buku gagal dihapus. Id tidak ditemukan'
 			
-		});
-		response.code(404);
-		return response;
+		}).code(404);
 	}
 	
-	const response = h.response({
+	return h.response({
 		status: 'success',
 		message: 'Buku berhasil dihapus'
-	});
-	response.code(200);
-	return response;
+	}).code(200);
 }
 
 module.exports = {
