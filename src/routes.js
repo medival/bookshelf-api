@@ -1,12 +1,15 @@
-const {} = require('./handler');
+const { addBookHandler } = require('./handler');
 
 const routes = [
 	{
 		method: 'POST',
 		path: '/books',
-		handler: (request, h) => {
-			
-		}
+		handler: addBookHandler,
+		options: {
+			cors: {
+				origin: ['*'],
+			},
+		},
 	},
 	{
 		method: 'GET',
