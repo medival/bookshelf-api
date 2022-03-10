@@ -283,7 +283,7 @@ const deleteBookById = (request, h) => {
       status: "fail",
       message: "Buku gagal dihapus. Id tidak ditemukan",
     })
-    .code(200);
+    .code(404);
 };
 
 module.exports = {
