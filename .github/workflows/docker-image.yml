@@ -26,8 +26,8 @@ jobs:
         # Directory to run `docker build` from, if not project root
         directory: .
         # Docker build arguments passed via --build-arg
-        username: ${ secrets.DOCKER_USERNAME}
+        username: ${{ secrets.DOCKER_USERNAME }}
         # Docker registry password
-        password: ${ secrets.DOCKER_PASSWORD}
+        password: ${{ secrets.DOCKER_PASSWORD }}
         # GitHub organization to push image to (if not current)
         addTimestamp: true
