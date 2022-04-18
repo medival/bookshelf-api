@@ -20,7 +20,7 @@ jobs:
         # Tags override for Docker image
         tags: latest
         # Target Docker registry
-        registry: dockerhub
+        registry: adipurnomo
         # Location of Dockerfile, if not Dockerfile in root directory
         dockerfile: Dockerfile
         # Directory to run `docker build` from, if not project root
