@@ -20,9 +20,9 @@ jobs:
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ environment.development.HOST }}
-        username: ${{ environment.development.USERNAME }}
-        key: ${{ environment.development.PRIVATE_KEY }}
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.PRIVATE_KEY }}
         port: 22
         script: |
             sudo bash
