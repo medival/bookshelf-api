@@ -33,7 +33,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:$(date +%Y%m%d%H%M%S)  
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:$(date +'%Y-%m-%d')  
         
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@master
