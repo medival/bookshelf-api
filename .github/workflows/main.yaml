@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CD
+name: Deploy
 
 # Controls when the workflow will run
 on:
@@ -26,7 +26,6 @@ jobs:
         port: 22
         script: |
             sudo bash
-            cd /home/medival/bookshelf-api
-            git pull origin development
-            git status
-            npm install 
+            docker pull adipurnomo/bookshelf-api
+            docker run -d -name bookshelf-api adipurnomo/bookshelf-api -p 5000:5000
+            
