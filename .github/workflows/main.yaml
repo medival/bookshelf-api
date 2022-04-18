@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Deploy
+name: CI/CD
 
 # Controls when the workflow will run
 on:
@@ -17,6 +17,24 @@ jobs:
    build:
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js latest
+      uses: actions/setup-node@v1
+      with:
+        node-version: 16.14.2
+    - run: npm i
+    
+    - name: Login to DockerHub
+      uses: docker/login-action@v1 
+      with:
+        username: ${{ secrets.DOCKERHUB_USERNAME }}
+        password: ${{ secrets.DOCKERHUB_TOKEN }}
+    - name: Build and push
+      uses: docker/build-push-action@v2
+      with:
+        push: true
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
+        
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@master
       with:
@@ -27,8 +45,8 @@ jobs:
         script: |
             sudo bash
             docker pull adipurnomo/bookshelf-api:latest
-            unset CONTAINER
-            CONTAINER=$(docker container ls | awk '{print $1}' | tail -n 1)
+            CONTAINER=$(docker ps -a | grep bookshelf | awk {'print $1'})
+            echo $CONTAINER
             docker stop $CONTAINER
             sleep 5s
             docker rm $CONTAINER
