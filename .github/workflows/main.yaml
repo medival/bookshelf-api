@@ -27,6 +27,9 @@ jobs:
         script: |
             sudo bash
             docker pull adipurnomo/bookshelf-api:latest
-            docker rm bookshelf
+            unset CONTAINER
+            CONTAINER=$(docker container ls | awk '{print $1}' | tail -n 1)
+            docker stop CONTAINER
+            docker rm CONTAINER
             docker run -d --name bookshelf -p 5000:5000 adipurnomo/bookshelf-api:latest
             
