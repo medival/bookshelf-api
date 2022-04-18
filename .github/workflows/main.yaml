@@ -26,6 +26,7 @@ jobs:
         port: 22
         script: |
             sudo bash
-            docker pull adipurnomo/bookshelf-api
-            docker run -d -name bookshelf-api adipurnomo/bookshelf-api -p 5000:5000
+            docker pull adipurnomo/bookshelf-api:latest
+            docker rm bookshelf
+            docker run -d --name bookshelf -p 5000:5000 adipurnomo/bookshelf-api:latest
             
