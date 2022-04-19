@@ -50,7 +50,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: adipurnomo/bookshelf-api:${{ env.GITHUB_SHA }}
+        tags: adipurnomo/bookshelf-api:latest
         
     # Deploy using Docker
     - name: executing remote ssh commands using password
@@ -69,7 +69,7 @@ jobs:
             sleep 5s
             docker rm $CONTAINER
             sleep 10s
-            docker run -d --name bookshelf -p 6000:5000 adipurnomo/bookshelf-api:latest
+            docker run -d --name bookshelf-api -p 6000:5000 adipurnomo/bookshelf-api:latest
             
     
             
