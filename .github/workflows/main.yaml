@@ -49,7 +49,6 @@ jobs:
     - name: Set Time
       run:
         echo "TIME=$(date +"%Y%m%d.%H%M%S")" >> $GITHUB_ENV
-        echo $TIME
     - name: Build and push
       uses: docker/build-push-action@v2
       with:
