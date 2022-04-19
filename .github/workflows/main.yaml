@@ -43,13 +43,19 @@ jobs:
         key: ${{ secrets.PRIVATE_KEY }}
         port: 22
         script: |
+            #sudo bash
+            #docker pull adipurnomo/bookshelf-api:latest
+            #CONTAINER=$(docker ps -a | grep bookshelf | awk {'print $1'})
+            #echo $CONTAINER
+            #docker stop $CONTAINER
+            #sleep 5s
+            #docker rm $CONTAINER
+            #sleep 10s
+            #docker run -d --name bookshelf -p 5000:5000 adipurnomo/bookshelf-api:latest
             sudo bash
-            docker pull adipurnomo/bookshelf-api:latest
-            CONTAINER=$(docker ps -a | grep bookshelf | awk {'print $1'})
-            echo $CONTAINER
-            docker stop $CONTAINER
-            sleep 5s
-            docker rm $CONTAINER
-            sleep 10s
-            docker run -d --name bookshelf -p 5000:5000 adipurnomo/bookshelf-api:latest
+            cd /home/medival/bookshelf-api/
+            git pull origin -b development
+            npm i
+            npm run start-dev
+            
             
