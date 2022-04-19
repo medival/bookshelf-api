@@ -28,10 +28,10 @@ jobs:
         port: 22
         script: |
             whoami
-            cd ${{env.WORKDIR }} 
-            git pull origin ${{ env.GITHUB_REF_NAME }}
+            cd /home/medival/bookshelf-api
+            git pull origin development
             npm i
-            pm2 restart ${{ env.APP_NAME }}
+            pm2 restart bookshelf-api
             pm2 ls
             
     # Build Stage
@@ -50,7 +50,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: ${{ env.DOCKER_REPO }}:${{ env.GITHUB_SHA }}
+        tags: adipurnomo/bookshelf-api:${{ GITHUB_SHA }}
         
     # Deploy using Docker
     - name: executing remote ssh commands using password
@@ -62,16 +62,14 @@ jobs:
         port: 22
         script: |
             #sudo bash
-            echo ${{ env.APP_NAME}}
-            echo ${{ env.GITHUB_SHA }}
-            docker pull ${{ env.DOCKER_REPO }}:${{ env.GITHUB_SHA }}
-            CONTAINER=$(docker ps -a | grep ${{ env.APP_NAME }} | awk {'print $1'})
+            docker pull adipurnomo/bookshelf-api:latest
+            CONTAINER=$(docker ps -a | grep bookshelf | awk {'print $1'})
             echo $CONTAINER
             docker stop $CONTAINER
             sleep 5s
             docker rm $CONTAINER
             sleep 10s
-            docker run -d --name ${{ env.APP_NAME }} -p ${{ env.DOCKER_PORT }}:${{ env.APP_PORT}} ${{ env.DOCKER_REPO }}:${{ env.GITHUB_SHA	}}
+            docker run -d --name bookshelf -p 6000:5000 adipurnomo/bookshelf-api:latest
             
     
             
