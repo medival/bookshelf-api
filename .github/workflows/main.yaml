@@ -52,7 +52,7 @@ jobs:
         script: |
           GITHUBSHA="$(date +'%Y%m%d.%H%M%S')"
         push: true
-        tags: adipurnomo/bookshelf-api:${GITHUBSHA}
+        tags: adipurnomo/bookshelf-api:$GITHUBSHA
         
     # Deploy using Docker
     - name: executing remote ssh commands using password
