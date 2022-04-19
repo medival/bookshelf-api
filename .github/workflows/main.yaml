@@ -70,7 +70,7 @@ jobs:
         tags: ${{ env.DOCKER_REPO }}:${{ env.GITHUB_SHA_SHORT }}
         
     # Deploy using Docker
-    - name: executing remote ssh commands using password
+    - name: Deploy to Docker
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.HOST }}
@@ -78,7 +78,6 @@ jobs:
         key: ${{ secrets.PRIVATE_KEY }}
         port: 22
         script: |
-            #sudo bash
             docker pull ${{ env.DOCKER_REPO }}:latest
             CONTAINER=$(docker ps -a | grep bookshelf | awk {'print $1'})
             echo $CONTAINER
@@ -87,3 +86,16 @@ jobs:
             docker rm $CONTAINER
             sleep 10s
             docker run -d --name ${{ env.APP_NAME }} -p 6000:5000 ${{ env.DOCKER_REPO }}:latest
+            
+    - name: Remove Dockerimage
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.PRIVATE_KEY }}
+        port: 22
+        script: |
+            DOCKERIMAGE=$(docker image ls  | tail -n 1 | awk {'print $3'})
+            docker rmi $DOCKERIMAGE
+            sleep 5s
+            docker image ls
