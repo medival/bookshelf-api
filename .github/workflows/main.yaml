@@ -22,7 +22,9 @@ jobs:
     - name: Set Time
       run:
         echo "TIME=$(date +"%Y%m%d.%H%M%S")" >> $GITHUB_ENV
-        
+    - name: Get SHORT SHA
+      run:
+        echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
     # Deploy by using github pull
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@master
@@ -55,7 +57,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: adipurnomo/bookshelf-api:${{ env.TIME }}
+        tags: adipurnomo/bookshelf-api:${{ env.GITHUB_SHA_SHORT }}
         
     # Deploy using Docker
     - name: executing remote ssh commands using password
