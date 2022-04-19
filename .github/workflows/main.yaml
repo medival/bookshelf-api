@@ -62,6 +62,8 @@ jobs:
         port: 22
         script: |
             #sudo bash
+            echo ${{ env.APP_NAME}}
+            echo ${{ env.GITHUB_SHA }}
             docker pull ${{ env.DOCKER_REPO }}:${{ env.GITHUB_SHA }}
             CONTAINER=$(docker ps -a | grep ${{ env.APP_NAME }} | awk {'print $1'})
             echo $CONTAINER
