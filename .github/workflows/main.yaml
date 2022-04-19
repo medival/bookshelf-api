@@ -25,6 +25,15 @@ jobs:
     - name: Get SHORT SHA
       run:
         echo "GITHUB_SHA_SHORT=$(echo $GITHUB_SHA | cut -c 1-6)" >> $GITHUB_ENV
+    - name: Set App Name
+      run:
+        echo "APP_NAME=bookshelf-api" >> $GITHUB_ENV
+    - name: Set DOCKER_REPO
+      run: 
+        echo "DOCKER_REPO=adipurnomo/$APP_NAME/" >> $GITHUB_ENV
+    - name: Set Workdir
+      run: 
+        echo "WORKDIR=/home/medival/$APP_NAME" >> $GITHUB_ENV
     # Deploy by using github pull
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@master
@@ -35,10 +44,10 @@ jobs:
         port: 22
         script: |
             whoami
-            cd /home/medival/bookshelf-api
+            cd ${{ env.WORKDIR }}
             git pull origin development
             npm i
-            pm2 restart bookshelf-api
+            pm2 restart ${{ env.APP_NAME }}}
             pm2 ls
             
     # Build Stage
@@ -55,11 +64,9 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: Build and push
       uses: docker/build-push-action@v2
-      env:
-        DOCKER_REPO: ${{ development.DOCKER_REPO }}
       with:
         push: true
-        tags: $DOCKER_REPO:${{ env.GITHUB_SHA_SHORT }}
+        tags: ${{ env.DOCKER_REPO }}:${{ env.GITHUB_SHA_SHORT }}
         
     # Deploy using Docker
     - name: executing remote ssh commands using password
@@ -71,14 +78,14 @@ jobs:
         port: 22
         script: |
             #sudo bash
-            docker pull adipurnomo/bookshelf-api:latest
+            docker pull ${{ env.DOCKER_REPO }}:latest
             CONTAINER=$(docker ps -a | grep bookshelf | awk {'print $1'})
             echo $CONTAINER
             docker stop $CONTAINER
             sleep 5s
             docker rm $CONTAINER
             sleep 10s
-            docker run -d --name bookshelf-api -p 6000:5000 adipurnomo/bookshelf-api:latest
+            docker run -d --name ${{ env.APP_NAME }} -p 6000:5000 ${{ env.DOCKER_REPO }}:latest
             
     
             
