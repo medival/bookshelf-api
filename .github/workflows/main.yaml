@@ -49,8 +49,10 @@ jobs:
     - name: Build and push
       uses: docker/build-push-action@v2
       with:
+        script: |
+          GITHUBSHA="$(date +'%Y%m%d.%H%M%S')"
         push: true
-        tags: adipurnomo/bookshelf-api:${{ env.GITHUB_SHA }}
+        tags: adipurnomo/bookshelf-api:${GITHUBSHA}
         
     # Deploy using Docker
     - name: executing remote ssh commands using password
