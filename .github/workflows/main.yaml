@@ -30,10 +30,11 @@ jobs:
         echo "APP_NAME=bookshelf-api" >> $GITHUB_ENV
     - name: Set DOCKER_REPO
       run: 
-        echo "DOCKER_REPO=adipurnomo/$APP_NAME/" >> $GITHUB_ENV
+        echo "DOCKER_REPO=adipurnomo/bookshelf-api/" >> $GITHUB_ENV
     - name: Set Workdir
       run: 
-        echo "WORKDIR=/home/medival/$APP_NAME" >> $GITHUB_ENV
+        echo "WORKDIR=/home/medival/bookshelf-api" >> $GITHUB_ENV
+        
     # Deploy by using github pull
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@master
