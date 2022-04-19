@@ -17,13 +17,30 @@ jobs:
    build:
     runs-on: ubuntu-latest
     steps:
+    
+    # Deploy by using github pull
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.PRIVATE_KEY }}
+        port: 22
+        script: |
+            whoami
+            cd /home/${{ secrets.USERNAME }}/${{ secrets.APP_NAME }}/
+            git pull origin ${{ env.GITHUB_REF_NAME }}
+            npm i
+            pm2 restart ${{ secrets.APP_NAME }}
+            pm2 ls
+            
+    # Build Stage
     - uses: actions/checkout@v2
     - name: Use Node.js latest
       uses: actions/setup-node@v1
       with:
         node-version: 16.14.2
     - run: npm i
-    
     - name: Login to DockerHub
       uses: docker/login-action@v1 
       with:
@@ -33,8 +50,9 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:latest
+        tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:${{ env.GITHUB_SHA }}
         
+    # Deploy using Docker
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@master
       with:
@@ -44,19 +62,15 @@ jobs:
         port: 22
         script: |
             #sudo bash
-            #docker pull adipurnomo/bookshelf-api:latest
-            #CONTAINER=$(docker ps -a | grep bookshelf | awk {'print $1'})
-            #echo $CONTAINER
-            #docker stop $CONTAINER
-            #sleep 5s
-            #docker rm $CONTAINER
-            #sleep 10s
-            #docker run -d --name bookshelf -p 5000:5000 adipurnomo/bookshelf-api:latest
-            whoami
-            cd /home/medival/bookshelf-api/
-            git pull origin development
-            npm i
-            pm2 restart bookshelf-api
-            pm2 ls
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:${{ env.GITHUB_SHA }}
+            CONTAINER=$(docker ps -a | grep ${{ secrets.APP_NAME }} | awk {'print $1'})
+            echo $CONTAINER
+            docker stop $CONTAINER
+            sleep 5s
+            docker rm $CONTAINER
+            sleep 10s
+            docker run -d --name ${{ secrets.APP_NAME }} -p ${{ secrets.DOCKER_PORT}}:${{ secrets.APP_PORT}} ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:${{ env.GITHUB_SHA	}}
+            
+    
             
             
