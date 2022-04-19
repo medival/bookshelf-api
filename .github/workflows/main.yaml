@@ -50,7 +50,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:${{ env.GITHUB_SHA }}
+        tags: adipurnomo/bookshelf-api:${{ env.GITHUB_SHA }}
         
     # Deploy using Docker
     - name: executing remote ssh commands using password
@@ -62,14 +62,14 @@ jobs:
         port: 22
         script: |
             #sudo bash
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:${{ env.GITHUB_SHA }}
+            docker pull adipurnomo/bookshelf-api:${{ env.GITHUB_SHA }}
             CONTAINER=$(docker ps -a | grep ${{ secrets.APP_NAME }} | awk {'print $1'})
             echo $CONTAINER
             docker stop $CONTAINER
             sleep 5s
             docker rm $CONTAINER
             sleep 10s
-            docker run -d --name ${{ secrets.APP_NAME }} -p ${{ secrets.DOCKER_PORT}}:${{ secrets.APP_PORT}} ${{ secrets.DOCKERHUB_USERNAME }}/${{ secrets.DOCKERHUB_REPO }}:${{ env.GITHUB_SHA	}}
+            docker run -d --name ${{ secrets.APP_NAME }} -p ${{ secrets.DOCKER_PORT}}:${{ secrets.APP_PORT}} adipurnomo/bookshelf-api:${{ env.GITHUB_SHA	}}
             
     
             
