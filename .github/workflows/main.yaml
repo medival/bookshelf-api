@@ -52,10 +52,11 @@ jobs:
             #docker rm $CONTAINER
             #sleep 10s
             #docker run -d --name bookshelf -p 5000:5000 adipurnomo/bookshelf-api:latest
-            sudo bash
+            whoami
             cd /home/medival/bookshelf-api/
-            git pull origin -b development
+            git pull origin development
             npm i
-            npm run start-dev
+            pm2 restart bookshelf-api
+            pm2 ls
             
             
