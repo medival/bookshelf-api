@@ -38,7 +38,10 @@ jobs:
     - name: Set DOCKER_REPO
       run: 
         echo "DOCKER_REPO=adipurnomo/${{ env.APP_NAME }}" >> $GITHUB_ENV
-        
+    - name: Set dockerImage
+      run:
+        echo "DOCKERIMAGE=${{ env.APP_NAME }}-${{ steps.extract_branch.outputs.branch }}" >> $GITHUB_ENV
+    
     # Deploy using github pull
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@master
@@ -53,7 +56,7 @@ jobs:
             git checkout ${{ steps.extract_branch.outputs.branch }}
             git pull origin ${{ steps.extract_branch.outputs.branch }}
             npm i
-            pm2 restart ${{ env.APP_NAME }}-${{ steps.extract_branch.outputs.branch }}
+            pm2 restart ${{ env.DOCKERIMAGE }}
             pm2 ls
             
     # Build Stage
@@ -83,14 +86,14 @@ jobs:
         key: ${{ secrets.PRIVATE_KEY }}
         port: 22
         script: |
-            docker pull ${{ env.DOCKER_REPO }}:latest
-            CONTAINER=$(docker ps -a | grep ${{ env.APP_NAME }}-${{ steps.extract_branch.outputs.branch }} | awk {'print $1'})
+            docker pull ${{ env.DOCKER_REPO }}-${{ steps.extract_branch.outputs.branch }}:latest
+            CONTAINER=$(docker ps -a | grep ${{ env.DOCKERIMAGE }} | awk {'print $1'})
             echo $CONTAINER
             docker stop $CONTAINER
             sleep 5s
             docker rm $CONTAINER
             sleep 10s
-            docker run -d --name ${{ env.APP_NAME }}-${{ steps.extract_branch.outputs.branch }} -p 6000:5000 ${{ env.DOCKER_REPO }}:latest
+            docker run -d --name ${{ env.DOCKERIMAGE }} -p 6000:5000 ${{ env.DOCKER_REPO }}:latest
             
     - name: Remove Dockerimage
       uses: appleboy/ssh-action@master
@@ -100,7 +103,7 @@ jobs:
         key: ${{ secrets.PRIVATE_KEY }}
         port: 22
         script: |
-            DOCKERIMAGE=$(docker image ls  | tail -n 1 | awk {'print $3'})
-            docker rmi $DOCKERIMAGE
+            RMDOCKERIMAGE=$(docker image ls  | tail -n 1 | awk {'print $3'})
+            docker rmi $RMDOCKERIMAGE
             sleep 5s
             docker image ls
