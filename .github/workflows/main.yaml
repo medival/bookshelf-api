@@ -86,14 +86,14 @@ jobs:
         key: ${{ secrets.PRIVATE_KEY }}
         port: 22
         script: |
-            docker pull ${{ env.DOCKER_REPO }}-${{ steps.extract_branch.outputs.branch }}:latest
+            docker pull ${{ env.DOCKER_REPO }}-${{ steps.extract_branch.outputs.branch }}:${{ env.BUILDDATE }}
             CONTAINER=$(docker ps -a | grep ${{ env.DOCKERIMAGE }} | awk {'print $1'})
             echo $CONTAINER
             docker stop $CONTAINER
             sleep 5s
             docker rm $CONTAINER
             sleep 10s
-            docker run -d --name ${{ env.DOCKERIMAGE }} -p 6000:5000 ${{ env.DOCKERIMAGE }}:latest
+            docker run -d --name ${{ env.DOCKERIMAGE }} -p 6000:5000 ${{ env.DOCKERIMAGE }}:${{ env.BUILDDATE }}
             
     - name: Remove Dockerimage
       uses: appleboy/ssh-action@master
