@@ -1,16 +1,16 @@
 steps:
   # Set environment
-  # - name: "bash"
-  #  args: ["echo", "BUILDDATE=$(date +"%Y%m%d.%H%M%S")"]
+  # - name: "ubuntu"
+  #   entrypoint: "bash"
+  #   args: 
+  #    - '-c'
+  #    - |
+  #      BUILDDATE=$(date +"%Y%m%d.%H%M%S")
   # Build a docker image
   - name: "gcr.io/cloud-builders/docker"
-    args: ["build", "-t", "gcr.io/$PROJECT_ID/$REPO_NAME-$BRANCH_NAME:_DATE_BUILD", "."]
+    args: ["build", "-t", "gcr.io/$PROJECT_ID/$REPO_NAME-$BRANCH_NAME:$SHORT_SHA", "."]
   # Push the docker image to container registry
   - name: "gcr.io/cloud-builders/docker"
-    args: ["push", "gcr.io/$PROJECT_ID/$REPO_NAME-$BRANCH_NAME:_DATE_BUILD"]
-  substitutions:
-    _DATE_BUILD: $(date +"%Y%m%d.%H%M%S")
-  options:
-    dynamic_substitutions: true
+    args: ["push", "gcr.io/$PROJECT_ID/$REPO_NAME-$BRANCH_NAME:$SHORT_SHA"]
 images:
-  - "gcr.io/$PROJECT_ID/$REPO_NAME-$BRANCH_NAME:_DATE_BUILD"
+  - "gcr.io/$PROJECT_ID/$REPO_NAME-$BRANCH_NAME:$SHORT_SHA"
