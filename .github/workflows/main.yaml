@@ -34,8 +34,12 @@ jobs:
     - name: Set Workdir
       run: 
         echo "WORKDIR=/home/medival/bookshelf-api" >> $GITHUB_ENV
-        
-    # Deploy by using github pull
+    - name: Get Current Branch
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch 
+      
+    # Deploy using github pull
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@master
       with:
@@ -67,7 +71,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: ${{ env.DOCKER_REPO }}:${{ env.GITHUB_SHA_SHORT }}
+        tags: ${{ env.DOCKER_REPO }}:${{APP_NAME}}-${{ steps.extract_branch.outputs.branch }}-${{ env.GITHUB_SHA_SHORT }}
         
     # Deploy using Docker
     - name: executing remote ssh commands using password
