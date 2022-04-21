@@ -53,6 +53,7 @@ jobs:
         script: |
             whoami
             cd ${{ env.WORKDIR }}
+            git checkout ${{ steps.extract_branch.outputs.branch }}
             git pull origin ${{ steps.extract_branch.outputs.branch }}
             npm i
             pm2 restart ${{ env.APP_NAME }}}
