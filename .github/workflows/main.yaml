@@ -28,9 +28,6 @@ jobs:
     - name: Set App Name
       run:
         echo "APP_NAME=bookshelf-api" >> $GITHUB_ENV
-    - name: Set DOCKER_REPO
-      run: 
-        echo "DOCKER_REPO=adipurnomo/bookshelf-api" >> $GITHUB_ENV
     - name: Set Workdir
       run: 
         echo "WORKDIR=/home/medival/bookshelf-api" >> $GITHUB_ENV
@@ -38,7 +35,10 @@ jobs:
       shell: bash
       run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
       id: extract_branch 
-      
+    - name: Set DOCKER_REPO
+      run: 
+        echo "DOCKER_REPO=adipurnomo/${{ env.APP_NAME }}" >> $GITHUB_ENV
+        
     # Deploy using github pull
     - name: executing remote ssh commands using password
       uses: appleboy/ssh-action@master
@@ -71,7 +71,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: ${{ env.DOCKER_REPO }}:${{ env.APP_NAME }}-${{ steps.extract_branch.outputs.branch }}-${{ env.TIME }}
+        tags: ${{ env.DOCKER_REPO }}-${{ steps.extract_branch.outputs.branch }}:${{ env.TIME }}
         
     # Deploy using Docker
     - name: executing remote ssh commands using password
