@@ -93,7 +93,7 @@ jobs:
             sleep 5s
             docker rm $CONTAINER
             sleep 10s
-            docker run -d --name ${{ env.DOCKERIMAGE }} -p 6000:5000 ${{ env.DOCKERIMAGE }}:${{ env.BUILDDATE }}
+            docker run -d --name ${{ env.DOCKERIMAGE }} -p 6000:5000 ${{ env.DOCKER_REPO }}-${{ steps.extract_branch.outputs.branch }}:${{ env.BUILDDATE }}
             
     - name: Remove Dockerimage
       uses: appleboy/ssh-action@master
