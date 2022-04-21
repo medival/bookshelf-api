@@ -53,7 +53,7 @@ jobs:
             git checkout ${{ steps.extract_branch.outputs.branch }}
             git pull origin ${{ steps.extract_branch.outputs.branch }}
             npm i
-            pm2 restart ${{ env.APP_NAME }}}
+            pm2 restart ${{ env.APP_NAME }}-${{ steps.extract_branch.outputs.branch }}
             pm2 ls
             
     # Build Stage
@@ -84,13 +84,13 @@ jobs:
         port: 22
         script: |
             docker pull ${{ env.DOCKER_REPO }}:latest
-            CONTAINER=$(docker ps -a | grep bookshelf | awk {'print $1'})
+            CONTAINER=$(docker ps -a | grep ${{ env.APP_NAME }}-${{ steps.extract_branch.outputs.branch }} | awk {'print $1'})
             echo $CONTAINER
             docker stop $CONTAINER
             sleep 5s
             docker rm $CONTAINER
             sleep 10s
-            docker run -d --name ${{ env.APP_NAME }} -p 6000:5000 ${{ env.DOCKER_REPO }}:latest
+            docker run -d --name ${{ env.APP_NAME }}-${{ steps.extract_branch.outputs.branch }} -p 6000:5000 ${{ env.DOCKER_REPO }}:latest
             
     - name: Remove Dockerimage
       uses: appleboy/ssh-action@master
