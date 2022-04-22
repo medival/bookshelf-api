@@ -119,5 +119,5 @@ jobs:
         CLUSTER_NAME: ${{ secrets.GKE_CLUSTER_NAME }}
         ZONE_NAME: ${{ secrets.GKE_ZONE }}
       with:
-        args: kubectl run nginx --image=nginx
+        args: run nginx --image=nginx
 
