@@ -88,7 +88,7 @@ jobs:
             sleep 5s
             docker rm $CONTAINER
             sleep 10s
-            docker run -d --name ${{ env.DOCKERIMAGE }} -p 6000:{{ env.DOCKER_PORT }} ${{ env.DOCKER_REPO }}-${{ steps.extract_branch.outputs.branch }}:${{ env.BUILDDATE }}
+            docker run -d --name ${{ env.DOCKERIMAGE }} -p 6000:5000 ${{ env.DOCKER_REPO }}-${{ steps.extract_branch.outputs.branch }}:${{ env.BUILDDATE }}
 
       # Remove oldest dockerimage
       - name: Remove Dockerimage
@@ -116,4 +116,4 @@ jobs:
         with:
           args:
              create deployment ${{ env.DOCKERIMAGE }} --image=${{ env.DOCKER_REPO }}-${{ steps.extract_branch.outputs.branch }}:${{ env.BUILDDATE }}
-             expose deployment ${{ env.DOCKERIMAGE }} --port={{ env.DOCKER_PORT }} --type=LoadBalancer
+             expose deployment ${{ env.DOCKERIMAGE }} --port=5000 --type=LoadBalancer
