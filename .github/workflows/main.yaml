@@ -94,7 +94,8 @@ jobs:
             docker rm $CONTAINER
             sleep 10s
             docker run -d --name ${{ env.DOCKERIMAGE }} -p 6000:5000 ${{ env.DOCKER_REPO }}-${{ steps.extract_branch.outputs.branch }}:${{ env.BUILDDATE }}
-            
+    
+    # Remove oldest dockerimage
     - name: Remove Dockerimage
       uses: appleboy/ssh-action@master
       with:
@@ -107,3 +108,4 @@ jobs:
             docker rmi $RMDOCKERIMAGE
             sleep 5s
             docker image ls
+    
