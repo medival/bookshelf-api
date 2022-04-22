@@ -111,6 +111,7 @@ jobs:
           APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
           CLUSTER_NAME: ${{ secrets.GKE_CLUSTER_NAME }}
           ZONE_NAME: ${{ secrets.GKE_ZONE }}
-        run: |
-          kubectl create deployment ${{ env.DOCKERIMAGE }} --image=${{ env.DOCKER_REPO }}-${{ steps.extract_branch.outputs.branch }}:${{ env.BUILDDATE }}
-          kubect expose deployment ${{ env.DOCKERIMAGE }} --port={{ env.DOCKER_PORT }} --type=LoadBalancer
+        with:
+          args:
+             create deployment ${{ env.DOCKERIMAGE }} --image=${{ env.DOCKER_REPO }}-${{ steps.extract_branch.outputs.branch }}:${{ env.BUILDDATE }}
+             expose deployment ${{ env.DOCKERIMAGE }} --port={{ env.DOCKER_PORT }} --type=LoadBalancer
