@@ -34,7 +34,9 @@ jobs:
         run: echo "DOCKER_REPO=adipurnomo/${{ env.APP_NAME }}" >> $GITHUB_ENV
       - name: Set dockerImage
         run: echo "DOCKERIMAGE=${{ env.APP_NAME }}-${{ steps.extract_branch.outputs.branch }}" >> $GITHUB_ENV
-
+      - name: Set DOCKER_PORT
+        run: echo "DOCKER_PORT=5000" >> $GITHUB_ENV
+        
       # Deploy using github pull
       - name: executing remote ssh commands using password
         uses: appleboy/ssh-action@master
@@ -86,7 +88,7 @@ jobs:
             sleep 5s
             docker rm $CONTAINER
             sleep 10s
-            docker run -d --name ${{ env.DOCKERIMAGE }} -p 6000:5000 ${{ env.DOCKER_REPO }}-${{ steps.extract_branch.outputs.branch }}:${{ env.BUILDDATE }}
+            docker run -d --name ${{ env.DOCKERIMAGE }} -p 6000:{{ env.DOCKER_PORT }} ${{ env.DOCKER_REPO }}-${{ steps.extract_branch.outputs.branch }}:${{ env.BUILDDATE }}
 
       # Remove oldest dockerimage
       - name: Remove Dockerimage
