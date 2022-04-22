@@ -109,3 +109,15 @@ jobs:
             sleep 5s
             docker image ls
     
+    # Deploy to GKE
+    - uses: actions/checkout@master
+    - name: kubectl - Google Cloud GKE cluster.
+      uses: ameydev/gke-kubectl-action@master
+      env:
+        PROJECT_ID: ${{ secrets.GOOGLE_PROJECT_ID }}
+        APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+        CLUSTER_NAME: ${{ secrets.GKE_CLUSTER_NAME }}
+        ZONE_NAME: ${{ secrets.GKE_ZONE }}
+      with:
+        args: kubectl run nginx --image=nginx
+
